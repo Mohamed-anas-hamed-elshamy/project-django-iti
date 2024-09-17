@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ITI Library{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4d8e46;
+            padding: 20px;
+            color: white;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: 85%;
+            margin: 0 auto;
+        }
+
+        main {
+            padding: 40px 0;
+        }
+
+        footer {
+            background-color: #111;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Profile Section */
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: block;
+            border: 5px solid #eee;
+            object-fit: cover;
+        }
+
+        .profile-section {
+            text-align: center;
+        }
+
+        .profile-label {
+            font-weight: 300;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .profile-value {
+            font-weight: 500;
+            color: #4d8e46;
+            font-size: 16px;
+        }
+
+        .profile-button {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .profile-button-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .profile-button-secondary {
+            background-color: #f0f0f0;
+            color: #4d8e46;
+        }
+
+        /* Form Styles */
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 400;
+        }
+
+        .btn-primary {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Error Styles */
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+        }
+
+        /* Message Styles */
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .message-success {
+            background-color: #dff0d8;
+            border-left: 5px solid #3c763d;
+            color: #3c763d;
+        }
+
+        .message-error {
+            background-color: #f2dede;
+            border-left: 5px solid #a94442;
+            color: #a94442;
+        }
+
+        .min-h-screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .flex-grow {
+            flex-grow: 1;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen">
+    <!-- Header Section -->
+    <header>
+        <nav class="container">
+            <a href="/" class="logo">ITI Library</a>
+            <div>
+                <a href="{% url 'books:books.list' %}">Show Books</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'books:books.borrowed' %}">
+                        {% if user.is_staff %}All Borrowed Books{% else %}My Books{% endif %}
+                    </a>
+                    <a href="{% url 'accounts.profile' %}">Dashboard</a>
+                    {% if user.is_staff %}
+                        <a href="{% url 'accounts.admin_user_list' %}">Manage Users</a>
+                    {% endif %}
+                    <a href="{% url 'accounts.logout' %}" class="profile-button profile-button-primary">Logout</a>
+                {% else %}
+                    <a href="{% url 'accounts.login' %}" class="profile-button profile-button-secondary">Login</a>
+                    <a href="{% url 'accounts.signup' %}" class="profile-button profile-button-primary">Sign Up</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Main Content Section -->
+    <main class="container flex-grow">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message message-{{ message.tags }}">
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+
+    {% block extra_body %}{% endblock %}
+</body>
+</html>

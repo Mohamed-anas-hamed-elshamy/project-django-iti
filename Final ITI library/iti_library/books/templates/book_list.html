@@ -1,0 +1,127 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div style="display: flex;align-items: center;flex-direction: column;" class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6">All Books</h1>
+    {% if user.is_staff %}
+    <a href="{% url 'books:books.create' %}" style="
+    display: inline-block;
+    background-color: #4d8e46; 
+    color: white; 
+    font-weight: bold; 
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none; 
+    transition: all 0.3s ease;
+    text-align: center; 
+    font-size: 16px; 
+    cursor: pointer; 
+    margin-bottom: 20px;
+" 
+    onmouseover="this.style.backgroundColor='#1d72b8'; this.style.boxShadow='0 6px 8px rgba(0, 0, 0, 0.2)';"
+    onmouseout="this.style.backgroundColor='#3490dc'; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.1)';">
+    Add New Book
+</a>
+    {% endif %}
+    
+    <div class="grid-container">
+        {% for book in books %}
+        <div class="grid-item">
+            {% if book.image %}
+                 <img src="{{ book.image.url }}" alt="{{ book.title }}" class="book-image">
+            {% else %}
+                <div class="no-image">
+                    <span class="text-gray-500">No image available</span>
+                </div>
+            {% endif %}
+            <div class="book-info">
+                <h2 class="book-title">Book Name: {{ book.title }}</h2>
+                <p class="text-gray-600">Author: {{ book.author }}</p>
+                <p class="text-gray-600">In stock: {{ book.available_quantity }}</p>
+                <a href="{% url 'books:books.detail' book.pk %}" class="book-link">Show</a>
+            </div>
+        </div>
+        {% empty %}
+        <p>No books available.</p>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <div class="pagination mt-6">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+.grid-item {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+}
+
+.book-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.no-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    background-color: #f0f0f0;
+}
+
+.book-info {
+    padding: 16px;
+}
+
+.book-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.book-link {
+    display: inline-block;
+    background-color: #4d8e46;
+    color: white;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.book-link:hover {
+    background-color: #1d72b8;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+</style>
+{% endblock %}
